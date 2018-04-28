@@ -22,7 +22,6 @@ class Monitoring():
         self.main()
 
 
-    ## Set methods
 
     # Get value of variables from the config file
     def get_conf_data(self):
@@ -45,6 +44,7 @@ class Monitoring():
         except:
             print("Couldn't import values from the config file")
 
+    # Set methods
     def set_ethalonString(self, ethalonString):
         self.ethalonString = ethalonString
 
@@ -75,10 +75,10 @@ class Monitoring():
            self.responseBody = strResponseBody
            return strResponseBody
         except ConnectionResetError as e:
-                code, explainError = e.args
-                print("Error code is '" + str(code) + "'")
-                print("Text of error is '" + explainError + "'")
-                print("Something went wrong with got response body...((")
+           code, explainError = e.args
+           print("Error code is '" + str(code) + "'")
+           print("Text of error is '" + explainError + "'")
+
 
     # Compare with ethalon string
     def compare_withEthalon(self):
@@ -100,20 +100,21 @@ class Monitoring():
             bot.sendMessage(chat_id=self.chatId, text=self.url + self.urlContext + " is broken. " + self.ethalonString + " not found")
         except NetworkError as e:
             print(e.args)
-            print("Some network problems were happines when we tried to send alert to the telegramm chat")
 
     # Main method
     def main(self):
-        FMT = "%Y-%m-%d %H:%M:%S"   #Задаем формат времени, который получаем
+        FMT = "%Y-%m-%d %H:%M:%S"  
+	# Set date and time in the past for the first iteration of the cycle 
         lastSentTime = "2018-04-25 00:00:00"
-        # Check response body every one second
+        # Check response body
         while True:
             self.get_body()
+            self.get_conf_data()
             isStringCorrect = self.compare_withEthalon()
             now = str(datetime.datetime.now().strftime(FMT))
             tdelta = datetime.datetime.strptime(now, FMT) - datetime.datetime.strptime(lastSentTime, FMT)
 
-            if ((isStringCorrect != "1") and (tdelta.seconds > self.frequencyOfSend)): #
+            if ((isStringCorrect != "1") and (tdelta.seconds > self.frequencyOfSend)): 
                 self.send_to_telegramm()
                 now = datetime.datetime.now().strftime(FMT)
                 lastSentTime = str(now)
@@ -121,7 +122,9 @@ class Monitoring():
 
 #Create object
 monitor = Monitoring(frequencyOfSend,frequencyOfCheck)
-#monitor1 = Monitoring(frequencyOfSend,frequencyOfCheck)
+
+#Some examples of creating the object of the class
+#monitor1 = Monitoring()
 #monitor2 = Monitoring(frequencyOfSend,frequencyOfCheck,"config.conf")
 
 
