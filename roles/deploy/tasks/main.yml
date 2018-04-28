@@ -60,6 +60,7 @@
   template:
    src: bot.sh
    dest: "{{ path_app }}/{{ app_name }}/bot.sh"
+   mode: 755
 
 - name: Copy template systemd service config
   become: yes
