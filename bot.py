@@ -104,13 +104,12 @@ class Monitoring():
         # Check response body
         while True:
             self.get_body()
-            self.get_conf_data()
             isStringCorrect = self.compare_withEthalon()
             now = str(datetime.datetime.now().strftime(FMT))
             tdelta = datetime.datetime.strptime(now, FMT) - datetime.datetime.strptime(lastSentTime, FMT)
-
             if ((isStringCorrect != "1") and (tdelta.seconds > self.frequencyOfSend)): 
                 self.send_to_telegramm()
+                self.get_conf_data()
                 now = datetime.datetime.now().strftime(FMT)
                 lastSentTime = str(now)
             time.sleep(self.frequencyOfCheck)
