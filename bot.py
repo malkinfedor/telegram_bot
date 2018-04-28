@@ -21,8 +21,6 @@ class Monitoring():
         self.get_conf_data()
         self.main()
 
-
-
     # Get value of variables from the config file
     def get_conf_data(self):
         try:
@@ -79,7 +77,6 @@ class Monitoring():
            print("Error code is '" + str(code) + "'")
            print("Text of error is '" + explainError + "'")
 
-
     # Compare with ethalon string
     def compare_withEthalon(self):
         try:
@@ -119,6 +116,7 @@ class Monitoring():
                 now = datetime.datetime.now().strftime(FMT)
                 lastSentTime = str(now)
             time.sleep(self.frequencyOfCheck)
+
 
 #Create object
 monitor = Monitoring(frequencyOfSend,frequencyOfCheck)
