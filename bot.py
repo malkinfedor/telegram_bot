@@ -1,11 +1,9 @@
 import ssl
 import http.client
-
 import sys
 import telegram
 import time
 import datetime
-
 from telegram.error import NetworkError
 
 frequencyOfCheck = 1  # in seconds
