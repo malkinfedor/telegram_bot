@@ -1,0 +1,4 @@
+repo: "https://github.com/malkinfedor/telegram_bot.git"
+path_app: "/opt"
+folder_app: "/telegram_bot"
+app_name: "telegram-bot"

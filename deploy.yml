@@ -1,0 +1,4 @@
+---
+- hosts: bots
+  roles:
+    - deploy
