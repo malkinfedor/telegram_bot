@@ -1,0 +1,9 @@
+[Unit]
+Description=Instance to serve telegram-bot
+
+[Service]
+Type=simple
+ExecStart=/home/asusin/telegram-bot/bot.sh
+
+[Install]
+WantedBy=multi-user.target
