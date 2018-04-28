@@ -1,5 +1,3 @@
-# Ansible playbook for deploying a Flask app
-#
 ---
 
 # Install all requirments and deploy app
