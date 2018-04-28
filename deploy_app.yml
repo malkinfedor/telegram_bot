@@ -33,14 +33,24 @@
       state: present
      when: not epel_repofile_result.stat.exists
 
-   - name: Install python
-     yum: name=python34 state=present update_cache=yes
+   - name: install all need apps and tools
+     yum: 
+      name: "{{ item }}" 
+      state: present
+     with_items:
+      - "python34"
+      - "python34-setuptools"
+      - "python-virtualenv"
+      - "git"
 
-   - name: Install easyinstall
-     yum: name=python34-setuptools state=present update_cache=yes
+#   - name: Install python
+#     yum: name=python34 state=present update_cache=yes
+
+#   - name: Install easyinstall
+#     yum: name=python34-setuptools state=present update_cache=yes
  
-   - name: Install virtualenv
-     yum: name=python-virtualenv state=present update_cache=yes
+#   - name: Install virtualenv
+#     yum: name=python-virtualenv state=present update_cache=yes
 
    - name: install pip with easy_install
      easy_install: 
@@ -48,14 +58,8 @@
       executable: easy_install-3.4
       state: latest
 
-#   - name: install modules in a virtualenv #Try Install with yum (python-virtualenv)
-#     pip:
-#       name: virtualenv
-#       state: present
-#     become: yes
-#
-   - name: install git
-     yum: name=git state=present update_cache=yes
+#   - name: install git
+#     yum: name=git state=present update_cache=yes
 
    - name: clone repo
      become: no
