@@ -34,11 +34,19 @@ class Monitoring():
                         self.urlContext = line.split("=")[1].replace('\n', '').replace(' ','').replace("'", "")
                     elif "substring" in line:
                         self.ethalonString = line.split("=")[1].replace('\n', '').replace(' ','').replace("'", "")
-        except AttributeError as e:
-            print(e.args)
-            sys.exit()
+                        print(self.ethalonString)
+
+            if self.tokenKey or self.chatId or self.url or self.urlContext or self.ethalonString == "":
+                print("Some of parameter(s) don't set in the config file")
+                sys.exit(1)
+        except AttributeError:
+            print("The AttributeError exception was happens with below explain:")
+            print(str(sys.exc_info()))
+            sys.exit(1)
         except:
-            print("Couldn't import values from the config file")
+            print("The exception was happens with below explain:")
+            print(str(sys.exc_info()))
+            sys.exit(1)
 
     # Set methods
     def set_ethalonString(self, ethalonString):
@@ -57,62 +65,79 @@ class Monitoring():
         self.url = urlContext
 
     # Get body of http response
-    def get_body(self):
+    def get_body(self, selfUrl = None, selfUrlContext = None):
         try:
-           context = ssl.create_default_context()
-           context.check_hostname = False
-           context.verify_mode = ssl.CERT_NONE
-           connect = http.client.HTTPSConnection(self.url, context=context)
-           connect.request("GET", self.urlContext)
-           r1 = connect.getresponse()
-           responseBody = r1.read()
-           connect.close()
-           strResponseBody = str(responseBody)
-           self.responseBody = strResponseBody
-           return strResponseBody
-        except ConnectionResetError as e:
-           code, explainError = e.args
-           print("Error code is '" + str(code) + "'")
-           print("Text of error is '" + explainError + "'")
+            selfUrl = self.url if selfUrl is None else selfUrl
+            selfUrlContext = self.urlContext if selfUrlContext is None else selfUrlContext
+            context = ssl.create_default_context()
+            context.check_hostname = False
+            context.verify_mode = ssl.CERT_NONE
+            connect = http.client.HTTPSConnection(self.url, context=context)
+            connect.request("GET", self.urlContext)
+            r1 = connect.getresponse()
+            responseBody = r1.read()
+            connect.close()
+            strResponseBody = str(responseBody)
+            self.responseBody = strResponseBody
+            return strResponseBody
+        except ConnectionResetError:
+            print("The ConnectionResetError exception was happens in the get_body() method with below explain:")
+            print(str(sys.exc_info()))
+        except:
+            print("The exception was happens in the get_body() method with below explain:")
+            print(str(sys.exc_info()))
 
     # Compare with ethalon string
-    def compare_withEthalon(self):
+    def compare_string(self, selfResponsebody = None, selfEthalonString = None):
         try:
-            isFind = (self.responseBody.find(self.ethalonString))
-            if (str(isFind) == "-1"):
-                isStringCorrect = "0"
-            else:
-                isStringCorrect = "1"
+            selfResponsebody = self.responseBody if selfResponsebody is None else selfResponsebody
+            selfEthalonString = self.ethalonString if selfEthalonString is None else selfEthalonString
+            isFind = (selfResponsebody.find(selfEthalonString))
+            isStringCorrect = False if (isFind == -1) else True
             return isStringCorrect
-        except AttributeError as e:
-            errno = e.args
-            sys.exit(1)
+        except AttributeError :
+            print("AttributeError exception was happens in the compare_string() method with below explain:")
+            print(str(sys.exc_info()))
+            sys.exit(2)
+        except:
+            print("The exception was happens in the compare_string() with below explain:")
+            print(str(sys.exc_info()))
 
     # Send to telegram
     def send_to_telegramm(self):
         try:
             bot = telegram.Bot(token = self.tokenKey)
-            bot.sendMessage(chat_id=self.chatId, text=self.url + self.urlContext + " is broken. " + self.ethalonString + " not found")
-        except NetworkError as e:
-            print(e.args)
-
+            bot.sendMessage(chat_id=self.chatId, 
+                text=self.url + self.urlContext + " is broken. "
+                + self.ethalonString + " not found")
+        except NetworkError:
+            print("The NetworkError exception was happens in the send_to_telegramm() method due to send message to telegram with below explain:")
+            print(str(sys.exc_info()))
+        except:
+            print("The exception was happens in the send_to_telegramm() method with below explain:")
+            print(str(sys.exc_info()))
     # Main method
     def main(self):
-        FMT = "%Y-%m-%d %H:%M:%S"  
-	# Set date and time in the past for the first iteration of the cycle 
-        lastSentTime = "2018-04-25 00:00:00"
-        # Check response body
-        while True:
-            self.get_body()
-            self.get_conf_data()
-            isStringCorrect = self.compare_withEthalon()
-            now = str(datetime.datetime.now().strftime(FMT))
-            tdelta = datetime.datetime.strptime(now, FMT) - datetime.datetime.strptime(lastSentTime, FMT)
-            if ((isStringCorrect != "1") and (tdelta.seconds > self.frequencyOfSend)): 
-                self.send_to_telegramm()
-                now = datetime.datetime.now().strftime(FMT)
-                lastSentTime = str(now)
-            time.sleep(self.frequencyOfCheck)
+        try:
+            FMT = "%Y-%m-%d %H:%M:%S"  
+	       # Set date and time in the past for the first iteration of the cycle 
+            lastSentTime = "2018-04-25 00:00:00"
+            # Check response body
+            while True:
+                self.get_body()
+                self.get_conf_data()
+                isStringCorrect = self.compare_string()
+                now = str(datetime.datetime.now().strftime(FMT))
+                tdelta = datetime.datetime.strptime(now, FMT) - datetime.datetime.strptime(lastSentTime, FMT)
+                if ((not isStringCorrect) and (tdelta.seconds > self.frequencyOfSend)): 
+                    self.send_to_telegramm()
+                    now = datetime.datetime.now().strftime(FMT)
+                    lastSentTime = str(now)
+                time.sleep(self.frequencyOfCheck)
+        except:
+            print("The exception was happens in the main() method with below explain:")
+            print(str(sys.exc_info()))
+            sys.exit(3)
 
 
 #Create object
