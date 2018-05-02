@@ -16,37 +16,12 @@ class Monitoring():
         self.frequencyOfCheck = frequencyOfCheck
         self.frequencyOfSend = frequencyOfSend
         self.confFile = confFile
+        isTestMode = self.parse_args(sys.argv[1:])
         self.get_conf_data()
-        self.main()
+        if not isTestMode:
+            self.main()
 
-    # Get value of variables from the config file
-    def get_conf_data(self):
-        try:
-            with open(self.confFile, 'r') as content_file:
-                for line in content_file:
-                    if "token"  in line:
-                        self.tokenKey = (line.split("=")[1]).replace('\n', '').replace(' ','').replace("'", "")
-                    elif "chat_id" in line:
-                        self.chatId = line.split("=")[1].replace('\n', '').replace(' ','').replace("'", "")
-                    elif "url" in line:
-                        self.url = line.split("=")[1].replace('\n', '').replace(' ','').replace("'", "")
-                    elif "context" in line:
-                        self.urlContext = line.split("=")[1].replace('\n', '').replace(' ','').replace("'", "")
-                    elif "substring" in line:
-                        self.ethalonString = line.split("=")[1].replace('\n', '').replace(' ','').replace("'", "")
-                        print(self.ethalonString)
-
-            if self.tokenKey or self.chatId or self.url or self.urlContext or self.ethalonString == "":
-                print("Some of parameter(s) don't set in the config file")
-                sys.exit(1)
-        except AttributeError:
-            print("The AttributeError exception was happens with below explain:")
-            print(str(sys.exc_info()))
-            sys.exit(1)
-        except:
-            print("The exception was happens with below explain:")
-            print(str(sys.exc_info()))
-            sys.exit(1)
+    
 
     # Set methods
     def set_ethalonString(self, ethalonString):
@@ -63,6 +38,38 @@ class Monitoring():
 
     def set_urlContext(self, urlContext):
         self.url = urlContext
+
+# Get value of variables from the config file
+    def get_conf_data(self):
+        try:
+            with open(self.confFile, 'r') as content_file:
+                for line in content_file:
+                    if "token"  in line:
+                        self.tokenKey = (line.split("=")[1]).replace('\n', '').replace(' ','').replace("'", "")
+                    elif "chat_id" in line:
+                        self.chatId = line.split("=")[1].replace('\n', '').replace(' ','').replace("'", "")
+                    elif "url" in line:
+                        self.url = line.split("=")[1].replace('\n', '').replace(' ','').replace("'", "")                        
+                    elif "context" in line:
+                        self.urlContext = line.split("=")[1].replace('\n', '').replace(' ','').replace("'", "")                        
+                    elif "substring" in line:
+                        self.ethalonString = line.split("=")[1].replace('\n', '').replace(' ','').replace("'", "")                        
+            if self.tokenKey == "" or self.chatId == "" or self.url == "" or self.urlContext == "" or self.ethalonString == "":
+                print("Some of parameter(s) don't set in the config file")
+                sys.exit(1)
+        except AttributeError:
+            print("The AttributeError exception was happens with below explain:")
+            print(str(sys.exc_info()))
+            sys.exit(1)
+        except:
+            print("The exception was happens with below explain:")
+            print(str(sys.exc_info()))
+            sys.exit(1)
+    # Parse arguments that pass due to start the program        
+    def parse_args(self, args):
+        isTestMode = False if args == [] else True
+        #print(frequencyOfSend, frequencyOfCheck, confFile, isTestMode)
+        return isTestMode
 
     # Get body of http response
     def get_body(self, selfUrl = None, selfUrlContext = None):
