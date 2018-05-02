@@ -1,5 +1,6 @@
 import ssl
 import http.client
+import socket
 import sys
 import telegram
 import time
@@ -18,6 +19,7 @@ class Monitoring():
         self.confFile = confFile
         isTestMode = self.parse_args(sys.argv[1:])
         self.get_conf_data()
+        #self.get_body("www.mo.com1", "/")
         if not isTestMode:
             self.main()
 
@@ -39,7 +41,7 @@ class Monitoring():
     def set_urlContext(self, urlContext):
         self.url = urlContext
 
-# Get value of variables from the config file
+    # Get value of variables from the config file
     def get_conf_data(self):
         try:
             with open(self.confFile, 'r') as content_file:
@@ -65,6 +67,7 @@ class Monitoring():
             print("The exception was happens with below explain:")
             print(str(sys.exc_info()))
             sys.exit(1)
+
     # Parse arguments that pass due to start the program        
     def parse_args(self, args):
         isTestMode = False if args == [] else True
@@ -79,8 +82,8 @@ class Monitoring():
             context = ssl.create_default_context()
             context.check_hostname = False
             context.verify_mode = ssl.CERT_NONE
-            connect = http.client.HTTPSConnection(self.url, context=context)
-            connect.request("GET", self.urlContext)
+            connect = http.client.HTTPSConnection(selfUrl, context=context, timeout = 5)
+            connect.request("GET", selfUrlContext)
             r1 = connect.getresponse()
             responseBody = r1.read()
             connect.close()
@@ -90,6 +93,18 @@ class Monitoring():
         except ConnectionResetError:
             print("The ConnectionResetError exception was happens in the get_body() method with below explain:")
             print(str(sys.exc_info()))
+        except AttributeError:
+            print("The AttributeError exception was happens in the get_body() method with below explain:")
+            print(str(sys.exc_info()))
+            sys.exit(2)
+        except socket.gaierror:
+            print("The socket.gaierror exception was happens in the get_body() method with below explain:")
+            print(sys.exc_info())
+            sys.exit(2)
+        except socket.timeout:
+            print("The socket.timeout exception was happens in the get_body() method with below explain:")
+            print(sys.exc_info())
+            sys.exit(2)              
         except:
             print("The exception was happens in the get_body() method with below explain:")
             print(str(sys.exc_info()))
@@ -105,10 +120,11 @@ class Monitoring():
         except AttributeError :
             print("AttributeError exception was happens in the compare_string() method with below explain:")
             print(str(sys.exc_info()))
-            sys.exit(2)
+            sys.exit(3)
         except:
             print("The exception was happens in the compare_string() with below explain:")
             print(str(sys.exc_info()))
+            sys.exit(3)
 
     # Send to telegram
     def send_to_telegramm(self):
@@ -123,6 +139,7 @@ class Monitoring():
         except:
             print("The exception was happens in the send_to_telegramm() method with below explain:")
             print(str(sys.exc_info()))
+
     # Main method
     def main(self):
         try:
@@ -144,7 +161,7 @@ class Monitoring():
         except:
             print("The exception was happens in the main() method with below explain:")
             print(str(sys.exc_info()))
-            sys.exit(3)
+            sys.exit(4)
 
 
 #Create object
