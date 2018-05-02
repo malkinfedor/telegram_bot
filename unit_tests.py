@@ -8,7 +8,6 @@ class BotCompareTesting(unittest.TestCase):
     def test_no_argumets_passed(self):
         with self.assertRaises(SystemExit) as cm:
             (isStringCorrect) = Monitoring.compare_string(monitor)
-
         the_exception = cm.exception
         self.assertEqual(the_exception.code, 3)
 
@@ -19,16 +18,13 @@ class BotCompareTesting(unittest.TestCase):
     def test_not_string_arguments_passed(self):
         with self.assertRaises(SystemExit) as cm:
             (isStringCorrect) = Monitoring.compare_string(monitor)
-
         the_exception = cm.exception
         self.assertEqual(the_exception.code, 3)
-
 
     def test_equilas_strings(self):
         (isStringCorrect) = Monitoring.compare_string(monitor, "hello", "hello")
         self.assertAlmostEqual (isStringCorrect, True)
        
-
     def test_not_equilas_string(self):
         (isStringCorrect) = Monitoring.compare_string(monitor, "hello", "bye")
         self.assertAlmostEqual (isStringCorrect, False)
