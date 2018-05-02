@@ -34,14 +34,12 @@ class BotCompareTesting(unittest.TestCase):
         self.assertAlmostEqual (isStringCorrect, False)
 
 
-#In all of below cases url and urlContext is given from conf file, so all tests will pass.
 class BotGetBodyTesting(unittest.TestCase):
     
     def test_no_argumets_passed(self):
         (responseBody) = Monitoring.get_body(monitor)
         assert type(responseBody) is str
 
-    #@unittest.skip("Skip this test")
     def test_one_argumet_passed(self):
         (responseBody) = Monitoring.get_body(monitor, "mail.ru")
         assert type(responseBody) is str
