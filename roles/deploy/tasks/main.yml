@@ -62,6 +62,13 @@
    dest: "{{ path_app }}/{{ app_name }}/bot.sh"
    mode: 755
 
+- name: Copy bash script for start unit tests
+  become: yes
+  template:
+   src: bot_tests.sh
+   dest: "{{ path_app }}/{{ app_name }}/bot_tests.sh"
+   mode: 755
+
 - name: Copy template systemd service config
   become: yes
   template: 
