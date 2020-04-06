@@ -65,4 +65,5 @@
 
 
 **To-Do**
-- Improve systemd unit ansible template using this [link](https://github.com/torfsen/python-systemd-tutorial/blob/master/README.md)
+- Improve systemd unit ansible template using this [link](https://github.com/torfsen/python-systemd-tutorial/blob/master/README.md);
+- Add an independent user (_bot_) for telegram bot with;
