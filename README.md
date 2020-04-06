@@ -63,3 +63,6 @@
 - *kitchen test*  
 После запуске создастся контейнер с centos-7, на нем будут выполнены роли ansible и после этого будут запущены проверки serverspec.
 
+
+**To-Do**
+- Improve systemd unit ansible template using this [link](https://github.com/torfsen/python-systemd-tutorial/blob/master/README.md)
